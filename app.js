@@ -26,7 +26,7 @@ const main = async()=>{
             break;
             case 2:
                 //Listar Tarea
-                const task = await ListarTareas(tareas.listadoArr)         
+                tareas.listadoCompleto();
             break;
             case 3:
 

@@ -23,6 +23,10 @@ class Tareas {
             this._listado[tarea.id]=tarea;
         })
     }
+    listadoCompleto(){
+        const arreglo=this.listadoArr()
+        console.log(arreglo);
+    }
     
 }
 module.exports=Tareas
