@@ -67,19 +67,37 @@ const leerInput = async(message)=>{
     const {desc} = await inquirer.prompt(question);
     return desc;
 }
-const ListarTareas =async(arrTareas)=>{
+const TareasListadosIncompletas =async(arrTareas)=>{
     let choices = [];
-
-    let estado = ""
     arrTareas.forEach((tarea,i) => {
-        const {id,description,completado}= tarea
-        const estado = (completado == null) ? 'Pendiete'.red : 'Completado'.green;
+        const {id,description,completado}= tarea;
+        if(completado == null){
+            const objt = {
+                value:id,
+                name:`${i+1} - ${description} :: ${'Pendiete'.red }`
+            }
+            choices.push(objt); 
+        }
+    });
+    const question =[{
+        name:'Tareas',
+        message:'Tareas:',
+        type:'list',
+        choices:choices
+    }]
+    const {Tareas} = await inquirer.prompt(question);
+    return Tareas;
 
+}
+const TareasListado =async(arrTareas)=>{
+    let choices = [];
+    arrTareas.forEach((tarea,i) => {
+        const {id,description,completado}= tarea;
         const objt = {
             value:id,
-            name:`${i+1} - ${description} :: ${estado}`
+            name:`${i+1} - ${description} :: ${(completado == null) ? 'Pendiente'.red: 'Completado'.green }`
         }
-        choices.push(objt);
+        choices.push(objt); 
     });
     const question =[{
         name:'Tareas',
@@ -95,5 +113,6 @@ module.exports= {
     inquirerMenu,
     pausa,
     leerInput,
-    ListarTareas
+    TareasListadosIncompletas,
+    TareasListado 
 }

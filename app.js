@@ -1,6 +1,6 @@
 //onst {MostrarMenu,Pausa} = require('./helpers/mensajes');
 
-const {inquirerMenu,pausa,leerInput,ListarTareas} = require('./helpers/inquirer')
+const {inquirerMenu,pausa,leerInput,TareasListadosIncompletas,TareasListado } = require('./helpers/inquirer')
 const {guardarDB,leerArchivo} = require('./helpers/mngDB')
 const Tarea = require('./models/tarea')
 const Tareas = require('./models/tareas')
@@ -29,18 +29,28 @@ const main = async()=>{
                 tareas.listadoCompleto();
             break;
             case 3:
+                //Listar Tareas Completadas
+                tareas.tareasCompletas();
 
             break;
             case 4:
-
+                //Listar Tareas Incompletas
+                tareas.tareasIncompletas();
             break;
             case 5:
-
+                //Completar Tarea
+                const option5 =await TareasListadosIncompletas(tareas.listadoArr);
+                tareas.completarTarea(option5);
+                guardarDB(tareas.listadoArr);
             break;
             case 6:
-
+                //Elminiar Tarea
+                const option6 =await TareasListado(tareas.listadoArr);
+                tareas.eliminarTarea(option6);
+                guardarDB(tareas.listadoArr);
             break;
             case 7: 
+                //Salir
 
             break;
         }
