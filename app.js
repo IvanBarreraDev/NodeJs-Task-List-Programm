@@ -1,6 +1,13 @@
 //onst {MostrarMenu,Pausa} = require('./helpers/mensajes');
 
-const {inquirerMenu,pausa,leerInput,TareasListadosIncompletas,TareasListado } = require('./helpers/inquirer')
+const {
+    inquirerMenu
+    ,pausa
+    ,leerInput
+    ,TareasListadosIncompletas
+    ,TareasListadoEliminar
+    ,confirmMsg } = require('./helpers/inquirer')
+
 const {guardarDB,leerArchivo} = require('./helpers/mngDB')
 const Tarea = require('./models/tarea')
 const Tareas = require('./models/tareas')
@@ -18,43 +25,48 @@ const main = async()=>{
         //opt= await MostrarMenu();
         opt= await inquirerMenu();
         switch(opt){
+            //Crear Tarea
             case 1:
-                //Crear Tarea
                 const descripcion = await leerInput('Descripción:')
                 tareas.creaTarea(descripcion);
-                guardarDB(tareas.listadoArr);
             break;
+            //Listar Tarea
             case 2:
-                //Listar Tarea
                 tareas.listadoCompleto();
             break;
+            //Listar Tareas Completadas
             case 3:
-                //Listar Tareas Completadas
-                tareas.tareasCompletas();
+                tareas.tareasIncompletasyCompletas(true);
 
             break;
+            //Listar Tareas Incompletas
             case 4:
-                //Listar Tareas Incompletas
-                tareas.tareasIncompletas();
+                tareas.tareasIncompletasyCompletas(false);
             break;
+            //Completar Tarea
             case 5:
-                //Completar Tarea
                 const option5 =await TareasListadosIncompletas(tareas.listadoArr);
                 tareas.completarTarea(option5);
-                guardarDB(tareas.listadoArr);
             break;
+            //Elminiar Tarea
             case 6:
-                //Elminiar Tarea
-                const option6 =await TareasListado(tareas.listadoArr);
-                tareas.eliminarTarea(option6);
-                guardarDB(tareas.listadoArr);
+                const option6 =await TareasListadoEliminar(tareas.listadoArr,false);
+                if(option6 !== '0'){
+                    const ok = await confirmMsg('¿Estas Seguro?');
+                    if(ok){
+                        tareas.eliminarTarea(option6);
+                        console.log('Tarea borrada'.yellow);
+                    }
+                }
+
             break;
+            //Salir
             case 7: 
-                //Salir
 
             break;
         }
         //
+        guardarDB(tareas.listadoArr);
         await pausa();
     }while(opt !== 0 );
 }

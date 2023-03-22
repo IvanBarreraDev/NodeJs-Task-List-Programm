@@ -68,28 +68,38 @@ const leerInput = async(message)=>{
     return desc;
 }
 const TareasListadosIncompletas =async(arrTareas)=>{
-    let choices = [];
+/*     let choices = [];
     arrTareas.forEach((tarea,i) => {
         const {id,description,completado}= tarea;
-        if(completado == null){
-            const objt = {
-                value:id,
-                name:`${i+1} - ${description} :: ${'Pendiete'.red }`
-            }
-            choices.push(objt); 
+        const objt = {
+            value:id,
+            name:`${i+1} - ${description} :: ${'Pendiete'.red }`
+        }
+        choices.push(objt); 
+    }); */
+    const choices = arrTareas.map((tarea,i)=>{
+        const {id,description,completado}= tarea;
+        return {
+            value:id,
+            name: `${i+1} - ${description} :: ${(completado == null) ? 'Pendiente'.red: 'Completado'.green }`,
+            checked:(completado !== null) ? true: false
         }
     });
+    choices.unshift({
+        value:'0',
+        name:`0 - Salir`.yellow
+    });
     const question =[{
-        name:'Tareas',
-        message:'Tareas:',
-        type:'list',
-        choices:choices
+        name:'ids',
+        message:'Seleccione:',
+        type:'checkbox',
+        choices
     }]
-    const {Tareas} = await inquirer.prompt(question);
-    return Tareas;
+    const {ids} = await inquirer.prompt(question);
+    return ids;
 
 }
-const TareasListado =async(arrTareas)=>{
+const TareasListadoEliminar =async(arrTareas)=>{
     let choices = [];
     arrTareas.forEach((tarea,i) => {
         const {id,description,completado}= tarea;
@@ -99,6 +109,10 @@ const TareasListado =async(arrTareas)=>{
         }
         choices.push(objt); 
     });
+    choices.unshift({
+        value:'0',
+        name:`0 - Salir`.yellow
+    })
     const question =[{
         name:'Tareas',
         message:'Tareas:',
@@ -109,10 +123,20 @@ const TareasListado =async(arrTareas)=>{
     return Tareas;
 
 }
+const confirmMsg= async (message)=>{
+    const question = [{
+        name:'ok',
+        type:'confirm',
+        message
+    }]
+    const {ok} = await inquirer.prompt(question);
+    return ok
+}
 module.exports= {
     inquirerMenu,
     pausa,
     leerInput,
     TareasListadosIncompletas,
-    TareasListado 
+    TareasListadoEliminar,
+    confirmMsg
 }

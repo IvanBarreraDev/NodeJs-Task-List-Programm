@@ -30,29 +30,37 @@ class Tareas {
         console.log(`${i+1} - ${description} :: ${estado}`);
     });
     }
-    tareasIncompletas(){
+    tareasIncompletasyCompletas(completada = true){
         const arreglo=this.listadoArr
         arreglo.forEach((tarea,i) => {
         const {description,completado}= tarea
-        if(completado == null){
-            console.log(`${i+1} - ${description} :: ${'Pendiete'.red }`);
+        if(completada){
+            if(completado != null){
+                console.log(`${i+1} - ${description} :: ${completado} :: ${'Completada'.green }`);
+            }
+        }else{
+            if(completado == null){
+                console.log(`${i+1} - ${description} :: ${'Pendiete'.red }`);
+            }
         }
+        
         });
     }
-    tareasCompletas(){
-        const arreglo=this.listadoArr
-        arreglo.forEach((tarea,i) => {
-        const {description,completado}= tarea
-        if(completado != null){
-            console.log(`${i+1} - ${description} :: ${completado} :: ${'Completada'.green }`);
-        }
-        });
-    }
-    completarTarea(id){
+    completarTarea(ids=[]){
+        //Obtengo Fecha
         const date = new Date();
         const [month, day, year]       = [date.getMonth(), date.getDate(), date.getFullYear()];
-        //const [hour, minutes, seconds] = [date.getHours(), date.getMinutes(), date.getSeconds()];
-        this._listado[id].completado=`${day}/${month}/${year}`;
+        //Completar las tareas que estaban pedientes y no cambiar la fechas de las que ya se encontraban completadas
+        ids.forEach((id)=>{
+            const estadoTarea=this._listado[id].completado;
+           this._listado[id].completado= (estadoTarea !== null) ? estadoTarea : `${day}/${month}/${year}`;
+        })
+        //Pongo pendiente a todas las tareas que no estan incluidas en el arreglo 'ids'
+        this.listadoArr.forEach((tarea)=>{
+            if(!ids.includes(tarea.id)){
+                this._listado[tarea.id].completado=null;
+            }
+        })
     }
     eliminarTarea(id){
         delete this._listado[id];
